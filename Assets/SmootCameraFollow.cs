@@ -8,11 +8,20 @@ public class SmootCameraFollow : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (target == null) return;
+
         Vector3 positionLerp = Vector3.Lerp(transform.position, target.position, Time.deltaTime * speed);
-        positionLerp.z = transform.position.z;  
+        positionLerp.z = transform.position.z;
 
         transform.position = positionLerp;
 
-        cam.orthographicSize = Mathf.Lerp(cam.orthographicSize, 5 * target.localScale.x, Time.deltaTime * scaleSpeed);
+        if (cam != null)
+        {
+            cam.orthographicSize = Mathf.Lerp(
+                cam.orthographicSize,
+                5 * target.localScale.x,
+                Time.deltaTime * scaleSpeed
+            );
+        }
     }
 }

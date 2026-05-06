@@ -13,10 +13,14 @@ public class Movement : MonoBehaviour
         Vector3 mousePos = new Vector3(mouseScreen.x, mouseScreen.y, 5f);
         Vector3 worldPos = cam.ScreenToWorldPoint(mousePos);
 
-        transform.position = Vector3.MoveTowards(
+        Vector3 newPosition = Vector3.MoveTowards(
             transform.position,
             worldPos,
             speed * Time.deltaTime
         );
+
+        newPosition.z = transform.position.z;
+
+        transform.position = newPosition;
     }
 }

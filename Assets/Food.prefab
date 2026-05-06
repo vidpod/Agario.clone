@@ -10,11 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 1122181064750336571}
   - component: {fileID: 1813509562621455711}
-  - component: {fileID: 2708269141238427188}
   - component: {fileID: 1820955936435169828}
   m_Layer: 0
   m_Name: Food
-  m_TagString: Untagged
+  m_TagString: Food
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -28,15 +27,15 @@ RectTransform:
   m_GameObject: {fileID: 2149304310876814191}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.9999994, y: 0.9999994, z: 1}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.1270001, y: -0.02000022}
-  m_SizeDelta: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0.0458, y: -0.1984}
+  m_SizeDelta: {x: 0.6543, y: 0.6433}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!212 &1813509562621455711
 SpriteRenderer:
@@ -97,20 +96,6 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
---- !u!114 &2708269141238427188
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2149304310876814191}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3768ceefa620bd14fac882d29e80c891, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: '::'
-  scaleSpeed: 5
-  currentScale: 1
 --- !u!58 &1820955936435169828
 CircleCollider2D:
   m_ObjectHideFlags: 0
