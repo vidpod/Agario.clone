@@ -163,6 +163,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 421687bbf27dc14419c0639abf78c998, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
+  botPrefab: {fileID: 6137619961670855447, guid: eea06026aea9edc4a9ecab8161893ea1, type: 3}
   foodPrefab: {fileID: 2149304310876814191, guid: ccdd6c1d9af4bb64c85e978fe16d0110, type: 3}
   xRange: {x: -10, y: 10}
   yRange: {x: -10, y: 10}

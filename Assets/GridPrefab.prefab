@@ -195465,6 +195465,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6583789302641386851}
   - component: {fileID: 1970605262022399412}
+  - component: {fileID: -288152558736583952}
   m_Layer: 0
   m_Name: GridPrefab
   m_TagString: Untagged
@@ -195500,3 +195501,18 @@ Grid:
   m_CellGap: {x: 0, y: 0, z: 0}
   m_CellLayout: 0
   m_CellSwizzle: 0
+--- !u!114 &-288152558736583952
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3982851373711451513}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 421687bbf27dc14419c0639abf78c998, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameManager
+  foodPrefab: {fileID: 0}
+  xRange: {x: 0, y: 0}
+  yRange: {x: 0, y: 0}
