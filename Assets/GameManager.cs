@@ -3,6 +3,9 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
+
+    public GameObject botPrefab;
+    int botCount = 10;
     public GameObject foodPrefab;
     public Vector2 xRange, yRange;
 
@@ -17,16 +20,38 @@ public class GameManager : MonoBehaviour
         {
             SpawnFood();
         }
+        for (int i = 0; i < botCount; i++)
+        {
+            spawnBot();
+        }
     }
     public void SpawnFood()
     {
         Vector3 spawnPosition = new Vector3(
             Random.Range(xRange.x, xRange.y),
             Random.Range(yRange.x, yRange.y),
-            1
+            0
         ); GameObject _food = Instantiate(foodPrefab, spawnPosition, Quaternion.identity);
         _food.GetComponent<SpriteRenderer>().color = Random.ColorHSV(0f,1f,0.9f,1f,0.9f,1f);
     }
+
+    public void spawnBot()
+    {
+        Vector3 spawnPosition = new Vector3(
+            Random.Range(xRange.x, xRange.y),
+            Random.Range(yRange.x, yRange.y),
+            0
+        );
+
+
+       
+        GameObject _bot = Instantiate(botPrefab, spawnPosition, Quaternion.identity);
+        SpriteRenderer sr = _bot.GetComponent<SpriteRenderer>();
+       
+        Color botColor = Random.ColorHSV(0f, 1f, 0.9f, 1f, 0.9f, 1f);
+        sr.material.SetColor("_MainColor", botColor);
+    }
+
     void Update()
     {
         
