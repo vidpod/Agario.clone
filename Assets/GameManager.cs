@@ -19,7 +19,6 @@ public class GameManager : MonoBehaviour
     {
         instance = this;
     }
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         for (int i = 0; i<50; i++)
@@ -50,7 +49,6 @@ public class GameManager : MonoBehaviour
         _food.GetComponent<SpriteRenderer>().color = Random.ColorHSV(0f,1f,0.9f,1f,0.9f,1f);
         currentFood++;
     }
-    // Update is called once per frame
     void Update()
     {
         transform.localScale = Vector3.Lerp(transform.localScale, Vector3.one * size, Time.deltaTime * 5f);
