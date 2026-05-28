@@ -6,8 +6,8 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
     public GameObject foodPrefab;
     public Vector2 xRange, yRange;
-    public float minDistance = 1.5f, size = 1f, maxSize = 3f, growthPerFood  = 0.1f;
-    public int currentFood = 0, maxFood = 100;
+    public float minDistance = 1.5f, size = 1f, maxSize = 1.5f, growthPerFood  = 0.1f;
+    public int currentFood = 0, maxFood = 50;
 
     public void Grow()
     {
