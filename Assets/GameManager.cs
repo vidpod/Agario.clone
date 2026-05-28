@@ -19,14 +19,11 @@ public class GameManager : MonoBehaviour
     private float nextSpawnTime,cellSize = 10f;
     private float timer;
 
-
+    
     private void Awake()
     {
         instance = this;
-       
-
-        if (foodPrefab == null)
-            Debug.LogError("Food prefab missing in GameManager!");
+      
     }
     void Start()
     {
