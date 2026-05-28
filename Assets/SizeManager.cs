@@ -3,13 +3,16 @@ using UnityEngine;
 public class SizeManager : MonoBehaviour
 {
     public float scaleSpeed = 5f;
-    public float currentScale = 1f;
+    public float currentScale = 1f,growthPerFood = 0.5f;
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        currentScale *= 1.05f;
-        GameManager.instance.SpawnFood();
-        Destroy(other.gameObject);
+        if (other.CompareTag("Food"))
+        {
+            currentScale += 0.1f/currentScale;
+            GameManager.instance.currentFood--;
+            Destroy(other.gameObject);
+        }
     }
     void Update()
     {

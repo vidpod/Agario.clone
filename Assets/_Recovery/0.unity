@@ -170,8 +170,6 @@ MonoBehaviour:
   minDistance: 1.5
   currentFood: 0
   maxFood: 100
-  minSpawnTime: 0.2
-  maxSpawnTime: 2
 --- !u!4 &149227201 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6583789302641386851, guid: 2de60b8be963c594baa7deebf9d05a3d, type: 3}
@@ -339,30 +337,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: -288152558736583952, guid: 2de60b8be963c594baa7deebf9d05a3d, type: 3}
-      propertyPath: xRange.x
-      value: -100
-      objectReference: {fileID: 0}
-    - target: {fileID: -288152558736583952, guid: 2de60b8be963c594baa7deebf9d05a3d, type: 3}
-      propertyPath: xRange.y
-      value: 100
-      objectReference: {fileID: 0}
-    - target: {fileID: -288152558736583952, guid: 2de60b8be963c594baa7deebf9d05a3d, type: 3}
-      propertyPath: yRange.x
-      value: -100
-      objectReference: {fileID: 0}
-    - target: {fileID: -288152558736583952, guid: 2de60b8be963c594baa7deebf9d05a3d, type: 3}
-      propertyPath: yRange.y
-      value: 100
-      objectReference: {fileID: 0}
-    - target: {fileID: -288152558736583952, guid: 2de60b8be963c594baa7deebf9d05a3d, type: 3}
-      propertyPath: botPrefab
-      value: 
-      objectReference: {fileID: 6137619961670855447, guid: eea06026aea9edc4a9ecab8161893ea1, type: 3}
-    - target: {fileID: -288152558736583952, guid: 2de60b8be963c594baa7deebf9d05a3d, type: 3}
-      propertyPath: foodPrefab
-      value: 
-      objectReference: {fileID: 2149304310876814191, guid: ccdd6c1d9af4bb64c85e978fe16d0110, type: 3}
     - target: {fileID: 3982851373711451513, guid: 2de60b8be963c594baa7deebf9d05a3d, type: 3}
       propertyPath: m_Name
       value: GridPrefab
