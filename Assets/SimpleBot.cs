@@ -36,7 +36,20 @@ public class SimpleBot : MonoBehaviour
         ChangeWanderDirection();
     }
 
+    void Update()
+    {
+        if (!isReacting)
+        {
+            wanderTimer += Time.deltaTime;
+            if (wanderTimer >= 2f)
+            {
+                ChangeWanderDirection();
+                wanderTimer = 0f;
+            }
+        }
 
+        // Chase timer odšteva
+       
 
     private void OnDrawGizmosSelected()
     {
