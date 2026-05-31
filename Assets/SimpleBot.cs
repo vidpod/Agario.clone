@@ -2,37 +2,47 @@ using UnityEngine;
 
 public class SimpleBot : MonoBehaviour
 {
-    public float speed = 2f;
-    [Range(0, 10)]
-    public float smoothness = 1f; // Kako hitro bot menja smer
+    [Header("Movement")]
+    public float speed = 4f;
+    public float responseTime = 0.15f;
+    public float fleeSpeedMultiplier = 1.4f;
+
+    [Header("AI Behavior")]
+    public float detectionRadius = 5f;
+    public LayerMask botLayer;
+
+    [Header("Food")]
+    public float foodDetectionRadius = 6f;
+
+    [Header("Chase")]
+    public float chaseDuration = 1.5f; // sekund lovi po izgubi vida
 
     private Vector2 targetDirection;
+    private Vector2 currentVelocity;
     private Rigidbody2D rb;
+    private float wanderTimer;
+    private bool isReacting = false;
+
+    private Transform lastKnownPrey;
+    private Vector2 lastKnownPreyPosition;
+    private float chaseTimer = 0f;
+    private bool isChasing = false;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        // Izbere prvo naključno smer
-        ChangeDirection();
-        // Vsaki 2 sekundi izbere novo smer, da ne gre samo v loku
-        InvokeRepeating("ChangeDirection", 0, 2f);
+        rb.freezeRotation = true;
+        rb.linearDamping = 0f;
+        ChangeWanderDirection();
     }
 
-    void ChangeDirection()
-    {
-        float angle = Random.Range(0f, 360f) * Mathf.Deg2Rad;
-        targetDirection = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
-    }
 
-    void FixedUpdate()
-    {
-        // Gladko premikanje (Linear Velocity)
-        rb.linearVelocity = Vector2.Lerp(rb.linearVelocity, targetDirection * speed, Time.fixedDeltaTime * smoothness);
-    }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void OnDrawGizmosSelected()
     {
-        // Če zadene zid, takoj spremeni smer stran od njega
-        targetDirection = Vector2.Reflect(targetDirection, collision.contacts[0].normal);
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, detectionRadius);
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(transform.position, foodDetectionRadius);
     }
 }
