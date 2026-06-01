@@ -1,12 +1,12 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using System.Collections.Generic;
 
 public class Movement : MonoBehaviour
 {
     public Camera cam;
     public float speed = 2f;
-    public float speedMultiplierPerScale = 0.1f;  // Smaller cells move faster
+    public float speedMultiplierPerScale = 0.1f;
 
     private SizeManager sizeManager;
     private InputAction splitAction;
@@ -15,100 +15,91 @@ public class Movement : MonoBehaviour
     private void Start()
     {
         sizeManager = GetComponent<SizeManager>();
-        sizeManager.ownerMovement = this;
-        mySplitCells.Add(sizeManager);
+        if (sizeManager != null)
+        {
+            sizeManager.ownerMovement = this;
+            mySplitCells.Add(sizeManager);
+        }
 
         splitAction = new InputAction("Split", binding: "<Keyboard>/space");
         splitAction.performed += OnSplitPerformed;
         splitAction.Enable();
+
+        Debug.Log("[MOVEMENT] Initialized. Split action enabled.");
     }
 
-    void Update()
+    private void Update()
     {
+        if (cam == null || Mouse.current == null) return;
+
         Vector2 mouseScreen = Mouse.current.position.ReadValue();
         Vector3 mousePos = new Vector3(mouseScreen.x, mouseScreen.y, 5f);
         Vector3 worldPos = cam.ScreenToWorldPoint(mousePos);
 
-        // Move all split cells toward mouse
-        foreach (SizeManager cell in mySplitCells)
-        {
-            if (cell != null)
-            {
-                // Smaller cells move faster
-                float cellSpeed = speed + (speedMultiplierPerScale * (1f / cell.currentScale));
+        // Move only the main player cell.
+        Vector3 newPosition = Vector3.MoveTowards(transform.position, worldPos, speed * Time.deltaTime);
+        newPosition.z = transform.position.z;
+        transform.position = newPosition;
 
-                Vector3 newPosition = Vector3.MoveTowards(
-                    cell.transform.position,
-                    worldPos,
-                    cellSpeed * Time.deltaTime
-                );
-
-                newPosition.z = cell.transform.position.z;
-                cell.transform.position = newPosition;
-            }
-        }
-
-        // Clean up destroyed cells
         mySplitCells.RemoveAll(cell => cell == null);
     }
 
     private void OnSplitPerformed(InputAction.CallbackContext context)
     {
+        Debug.Log("[MOVEMENT] Split key pressed!");
         if (sizeManager != null)
         {
             sizeManager.SplitCell();
         }
+        else
+        {
+            Debug.LogError("[ERROR] No SizeManager found!");
+        }
     }
 
-    /// <summary>
-    /// Register a new split cell
-    /// </summary>
     public void RegisterSplitCell(SizeManager newCell)
     {
+        if (newCell == null) return;
         if (!mySplitCells.Contains(newCell))
         {
             mySplitCells.Add(newCell);
-            Debug.Log($"Split cell registered. Total cells: {mySplitCells.Count}");
+            Debug.Log($"[MOVEMENT] Split cell registered. Total cells: {mySplitCells.Count}");
         }
     }
 
-    /// <summary>
-    /// Unregister a merged/destroyed split cell
-    /// </summary>
     public void UnregisterSplitCell(SizeManager cell)
     {
-        if (mySplitCells.Contains(cell))
+        if (cell == null) return;
+        if (mySplitCells.Remove(cell))
         {
-            mySplitCells.Remove(cell);
-            Debug.Log($"Split cell unregistered. Total cells: {mySplitCells.Count}");
+            Debug.Log($"[MOVEMENT] Split cell unregistered. Total cells: {mySplitCells.Count}");
         }
     }
 
-    /// <summary>
-    /// Get all split cells owned by this player
-    /// </summary>
     public List<SizeManager> GetAllCells()
     {
         mySplitCells.RemoveAll(cell => cell == null);
         return mySplitCells;
     }
 
-    /// <summary>
-    /// Get total mass of all split cells
-    /// </summary>
     public float GetTotalMass()
     {
         float totalMass = 0f;
         foreach (SizeManager cell in mySplitCells)
         {
-            if (cell != null)
-                totalMass += cell.currentScale;
+            if (cell != null) totalMass += cell.currentScale;
         }
         return totalMass;
     }
 
     private void OnDestroy()
     {
-        splitAction?.Dispose();
+        if (splitAction != null)
+        {
+            splitAction.performed -= OnSplitPerformed;
+            splitAction.Disable();
+            splitAction.Dispose();
+            splitAction = null;
+        }
     }
 }

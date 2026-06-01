@@ -1,26 +1,37 @@
-using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class SizeManager : MonoBehaviour
 {
     public float scaleSpeed = 5f;
-    public float currentScale = 1f, growthPerFood = 0.5f;
+    public float currentScale = 1f;
+    public float growthPerFood = 0.5f;
     public float combatGrowthFactor = 0.2f;
 
     [Header("Split Settings")]
     public float minSizeToSplit = 2f;
     public float splitScaleReduction = 0.8f;
-    public float splitForce = 15f;
+    public float splitForce = 3600f;
+    public float splitTravelMultiplier = 1f;
+    public float splitCellDamping = 0.6f;
+    public float splitSpawnOffset = 0.6f;
+    public float splitReturnDelay = 0.25f;
+    public float splitReturnAcceleration = 8f;
+    public float splitReturnMaxSpeed = 15f;
+    public GameObject splitCellPrefab;
 
     [Header("Merge Settings")]
-    public float mergeDistance = 2.5f;
+    public float mergeDistance = 1.5f;
     public float mergeDelay = 0.5f;
-    private float timeSinceSplit = 0f;
 
     [Header("Cell Ownership")]
     public string ownerTag = "Player";
     public Movement ownerMovement;
+    public bool isMainCell = true;
 
+    private float timeSinceSplit = 0f;
+    private float splitTimer = 0f;
     private List<SizeManager> linkedCells = new List<SizeManager>();
     private Rigidbody2D rb;
     private CircleCollider2D circleCollider;
@@ -29,13 +40,19 @@ public class SizeManager : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         circleCollider = GetComponent<CircleCollider2D>();
-        timeSinceSplit = 0f;
 
-        // Ensure physics is properly configured
+        timeSinceSplit = 0f;
+        splitTimer = 0f;
+
         if (rb != null)
         {
             rb.freezeRotation = true;
             rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+        }
+
+        if (splitCellPrefab == null)
+        {
+            Debug.LogWarning($"[WARNING] {gameObject.name} has no splitCellPrefab assigned!");
         }
     }
 
@@ -52,33 +69,61 @@ public class SizeManager : MonoBehaviour
     private void OnCollisionEnter2D(Collision2D collision)
     {
         SizeManager otherCharacter = collision.gameObject.GetComponent<SizeManager>();
-
         if (otherCharacter != null)
         {
-            // Check if both cells belong to same owner (merge logic)
-            if (ownerMovement != null && otherCharacter.ownerMovement == ownerMovement)
+            // Merge with own cells
+            if (ownerMovement != null && otherCharacter.ownerMovement == ownerMovement && isMainCell && otherCharacter != this)
             {
                 TryMerge(otherCharacter);
                 return;
             }
 
-            // Combat logic (eating other cells)
+            // Combat eat
             if (this.currentScale > otherCharacter.currentScale)
             {
-             
                 currentScale += otherCharacter.currentScale * combatGrowthFactor;
-
                 Debug.Log($"[USPEH] {gameObject.name} je pojedel {collision.gameObject.name}. Nova ciljna velikost: {currentScale}");
+                Destroy(collision.gameObject);
+            }
 
+            return;
+        }
+
+        // Bot eating
+        SimpleBot bot = collision.gameObject.GetComponent<SimpleBot>();
+        if (bot != null)
+        {
+            float botSize = collision.transform.localScale.x;
+            if (this.currentScale > botSize)
+            {
+                currentScale += botSize;
+                Debug.Log($"[BOT EATEN] {gameObject.name} je pojedel {collision.gameObject.name}. Nova ciljna velikost: {currentScale}");
                 Destroy(collision.gameObject);
             }
         }
     }
 
-    void Update()
+    private void Update()
     {
         timeSinceSplit += Time.deltaTime;
+        splitTimer += Time.deltaTime;
+
         transform.localScale = Vector3.Lerp(transform.localScale, new Vector3(currentScale, currentScale, 1), Time.deltaTime * scaleSpeed);
+
+        if (!isMainCell && rb != null && ownerMovement != null && splitTimer >= splitReturnDelay)
+        {
+            Vector2 toOwner = (Vector2)ownerMovement.transform.position - rb.position;
+            float distance = toOwner.magnitude;
+            if (distance > 0.05f)
+            {
+                Vector2 desiredVelocity = toOwner.normalized * Mathf.Min(splitReturnMaxSpeed, distance * 3f);
+                rb.linearVelocity = Vector2.MoveTowards(rb.linearVelocity, desiredVelocity, splitReturnAcceleration * Time.deltaTime);
+            }
+            else
+            {
+                rb.linearVelocity = Vector2.zero;
+            }
+        }
 
         if (timeSinceSplit >= mergeDelay && ownerMovement != null)
         {
@@ -86,9 +131,6 @@ public class SizeManager : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Splits the cell into two cells with reduced size
-    /// </summary>
     public void SplitCell()
     {
         if (currentScale < minSizeToSplit)
@@ -97,58 +139,89 @@ public class SizeManager : MonoBehaviour
             return;
         }
 
+        if (splitCellPrefab == null)
+        {
+            Debug.LogError("[ERROR] splitCellPrefab is NOT assigned!");
+            return;
+        }
+
         currentScale *= splitScaleReduction;
 
-        GameObject newCell = Instantiate(gameObject, transform.position, Quaternion.identity);
+        Vector2 splitDirection = GetCursorDirection();
+        Vector3 spawnPosition = transform.position + (Vector3)(splitDirection * splitSpawnOffset);
+        GameObject newCell = Instantiate(splitCellPrefab, spawnPosition, Quaternion.identity);
 
-        // Configure the new cell
+        SpriteRenderer parentSprite = GetComponent<SpriteRenderer>();
+        SpriteRenderer newSprite = newCell.GetComponent<SpriteRenderer>();
+        if (parentSprite != null && newSprite != null)
+        {
+            newSprite.sprite = parentSprite.sprite;
+            newSprite.color = parentSprite.color;
+        }
+
         SizeManager newSizeManager = newCell.GetComponent<SizeManager>();
+        if (newSizeManager == null)
+        {
+            Destroy(newCell);
+            return;
+        }
+
         newSizeManager.currentScale = currentScale;
         newSizeManager.ownerMovement = ownerMovement;
         newSizeManager.ownerTag = ownerTag;
+        newSizeManager.isMainCell = false;
         newSizeManager.timeSinceSplit = 0f;
+        newSizeManager.splitTimer = 0f;
+        newSizeManager.splitCellPrefab = splitCellPrefab;
 
-        // Ensure Rigidbody is properly configured
         Rigidbody2D newRb = newCell.GetComponent<Rigidbody2D>();
         if (newRb != null)
         {
             newRb.freezeRotation = true;
             newRb.constraints = RigidbodyConstraints2D.FreezeRotation;
-
-            Vector2 splitDirection = Random.insideUnitCircle.normalized;
-            newRb.linearVelocity = splitDirection * splitForce;
+            newRb.linearDamping = splitCellDamping;
+            newRb.linearVelocity = splitDirection * (splitForce * splitTravelMultiplier);
         }
 
-        // Disable Movement component on split cell (only main cell controls all)
         Movement newMovement = newCell.GetComponent<Movement>();
         if (newMovement != null)
         {
             newMovement.enabled = false;
         }
 
-        // Register new cell with owner
         if (ownerMovement != null)
         {
             ownerMovement.RegisterSplitCell(newSizeManager);
         }
 
-        Debug.Log($"Cell split! New scale: {currentScale}. Split cells registered: {ownerMovement?.GetAllCells().Count}");
+        Debug.Log("[SPLIT] Cell split successfully!");
     }
 
-    /// <summary>
-    /// Checks for nearby cells owned by same player and merges if conditions met
-    /// </summary>
+    private Vector2 GetCursorDirection()
+    {
+        Camera camLocal = ownerMovement != null && ownerMovement.cam != null ? ownerMovement.cam : Camera.main;
+
+        if (camLocal != null && Mouse.current != null)
+        {
+            Vector2 mouseScreen = Mouse.current.position.ReadValue();
+            Vector3 mousePos = new Vector3(mouseScreen.x, mouseScreen.y, 5f);
+            Vector3 worldPos = camLocal.ScreenToWorldPoint(mousePos);
+            Vector2 direction = ((Vector2)worldPos - (Vector2)transform.position).normalized;
+            if (direction != Vector2.zero) return direction;
+        }
+
+        return Vector2.right;
+    }
+
     private void CheckForMergeNearby()
     {
         Collider2D[] nearbyColliders = Physics2D.OverlapCircleAll(transform.position, mergeDistance);
-
         foreach (Collider2D collider in nearbyColliders)
         {
-            if (collider.gameObject == gameObject)
-                continue;
+            if (collider.gameObject == gameObject) continue;
 
             SizeManager otherSize = collider.GetComponent<SizeManager>();
-            if (otherSize != null && otherSize.ownerMovement == ownerMovement && otherSize.timeSinceSplit >= mergeDelay)
+            if (otherSize != null && otherSize.ownerMovement == ownerMovement && otherSize.timeSinceSplit >= mergeDelay && isMainCell)
             {
                 TryMerge(otherSize);
                 break;
@@ -156,21 +229,16 @@ public class SizeManager : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Merges two cells belonging to the same owner
-    /// </summary>
     private void TryMerge(SizeManager otherCell)
     {
-        if (otherCell == null || otherCell.gameObject == gameObject)
-            return;
+        if (otherCell == null || otherCell.gameObject == gameObject) return;
 
-        // Combine scales
-        currentScale += otherCell.currentScale;
+        float mergeReturnFactor = 1f - splitScaleReduction;
+        currentScale += otherCell.currentScale * mergeReturnFactor;
         timeSinceSplit = 0f;
 
         Debug.Log($"Cells merged! New scale: {currentScale}");
 
-        // Remove from Movement's tracking before destroying
         if (ownerMovement != null)
         {
             ownerMovement.UnregisterSplitCell(otherCell);
@@ -181,8 +249,7 @@ public class SizeManager : MonoBehaviour
 
     public void RegisterLinkedCell(SizeManager cell)
     {
-        if (!linkedCells.Contains(cell))
-            linkedCells.Add(cell);
+        if (!linkedCells.Contains(cell)) linkedCells.Add(cell);
     }
 
     public List<SizeManager> GetLinkedCells()
