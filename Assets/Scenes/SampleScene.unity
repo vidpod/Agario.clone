@@ -168,7 +168,7 @@ MonoBehaviour:
   xRange: {x: -10, y: 10}
   yRange: {x: -10, y: 10}
   currentFood: 0
-  maxFood: 100
+  maxFood: 100000
   minSpawnTime: 0.2
   maxSpawnTime: 2
 --- !u!4 &149227201 stripped
@@ -327,9 +327,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SmootCameraFollow
   target: {fileID: 1537139251}
-  speed: 3
-  scaleSpeed: 3
   cam: {fileID: 330585545}
+  followSpeed: 10
+  zoomSpeed: 6
+  baseOrthoSize: 6
+  zoomFactor: 3.5
+  zoomPower: 0.65
+  minOrthoSize: 6
+  maxOrthoSize: 35
 --- !u!1001 &380843062
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -686,7 +691,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Movement
   cam: {fileID: 330585545}
-  speed: 6
+  speed: 3
+  speedMultiplierPerScale: 0.1
 --- !u!50 &1537139253
 Rigidbody2D:
   serializedVersion: 5
@@ -763,9 +769,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SizeManager
   scaleSpeed: 1
-  currentScale: 1
+  currentScale: 8
   growthPerFood: 0.5
   combatGrowthFactor: 0.2
+<<<<<<< HEAD
 --- !u!114 &1537139257
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1366,6 +1373,28 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+=======
+  minSizeToSplit: 1
+  splitScaleReduction: 0.8
+  splitForce: 15
+  splitTravelMultiplier: 1
+  splitCellDamping: 0.6
+  splitSpawnOffset: 0.6
+  splitReturnDelay: 0.25
+  splitReturnAcceleration: 8
+  splitReturnMaxSpeed: 15
+  splitCellPrefab: {fileID: 1765412707}
+  mergeDistance: 2.5
+  mergeDelay: 0.5
+  ownerTag: Player
+  ownerMovement: {fileID: 1537139252}
+  isMainCell: 1
+--- !u!1 &1765412707 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8081559159623646377, guid: e8bacd7228cdd9d408f7bf20364cc3e6, type: 3}
+  m_PrefabInstance: {fileID: 5140306333321417167}
+  m_PrefabAsset: {fileID: 0}
+>>>>>>> main
 --- !u!1 &2118641419
 GameObject:
   m_ObjectHideFlags: 0
@@ -1495,6 +1524,87 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &5140306333321417167
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3117039965716283867, guid: e8bacd7228cdd9d408f7bf20364cc3e6, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -70.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 3117039965716283867, guid: e8bacd7228cdd9d408f7bf20364cc3e6, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 3117039965716283867, guid: e8bacd7228cdd9d408f7bf20364cc3e6, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3117039965716283867, guid: e8bacd7228cdd9d408f7bf20364cc3e6, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3117039965716283867, guid: e8bacd7228cdd9d408f7bf20364cc3e6, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3117039965716283867, guid: e8bacd7228cdd9d408f7bf20364cc3e6, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3117039965716283867, guid: e8bacd7228cdd9d408f7bf20364cc3e6, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3117039965716283867, guid: e8bacd7228cdd9d408f7bf20364cc3e6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3117039965716283867, guid: e8bacd7228cdd9d408f7bf20364cc3e6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3117039965716283867, guid: e8bacd7228cdd9d408f7bf20364cc3e6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5251786599497202455, guid: e8bacd7228cdd9d408f7bf20364cc3e6, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -2413806693520163455, guid: 5543a854093739a409735c946faea042, type: 3}
+    - target: {fileID: 5251786599497202455, guid: e8bacd7228cdd9d408f7bf20364cc3e6, type: 3}
+      propertyPath: m_Color.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5251786599497202455, guid: e8bacd7228cdd9d408f7bf20364cc3e6, type: 3}
+      propertyPath: m_Color.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5251786599497202455, guid: e8bacd7228cdd9d408f7bf20364cc3e6, type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5251786599497202455, guid: e8bacd7228cdd9d408f7bf20364cc3e6, type: 3}
+      propertyPath: m_SortingOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5251786599497202455, guid: e8bacd7228cdd9d408f7bf20364cc3e6, type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081559159623646377, guid: e8bacd7228cdd9d408f7bf20364cc3e6, type: 3}
+      propertyPath: m_Name
+      value: SplitCellPrefab
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: e8bacd7228cdd9d408f7bf20364cc3e6, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -1504,5 +1614,9 @@ SceneRoots:
   - {fileID: 380843062}
   - {fileID: 101336174}
   - {fileID: 2118641421}
+<<<<<<< HEAD
   - {fileID: 1953026350}
   - {fileID: 1833954790}
+=======
+  - {fileID: 5140306333321417167}
+>>>>>>> main
