@@ -10,6 +10,9 @@ public class SizeManager : MonoBehaviour
     {
         if (other.CompareTag("Food"))
         {
+
+            SFXManager.instance.PlayFoodEat();
+
             currentScale += 0.1f/currentScale;
             GameManager.instance.currentFood--;
             Destroy(other.gameObject);
@@ -24,22 +27,29 @@ public class SizeManager : MonoBehaviour
         {
             
             if (this.currentScale > otherCharacter.currentScale)
-            {
-             
-                currentScale += otherCharacter.currentScale * combatGrowthFactor;
+{
+    currentScale += otherCharacter.currentScale * combatGrowthFactor;
 
-                Debug.Log($"[USPEH] {gameObject.name} je pojedel {collision.gameObject.name}. Nova ciljna velikost: {currentScale}");
+    if (collision.gameObject.CompareTag("Player"))
+    {
+        SFXManager.instance.PlayPlayerDeath();
+        Invoke(nameof(LoadGameOver), 1f);
+    }
+    else
+    {
+        SFXManager.instance.PlayBotEat();
+    }
 
-                if(collision.gameObject.CompareTag("Player"))
-                {
-                    SceneManager.LoadScene("GameOver");
-                }
-
-                Destroy(collision.gameObject);
-            }
+    Destroy(collision.gameObject);
+}
         }
     }
-    
+
+    private void LoadGameOver()
+    {
+    SceneManager.LoadScene("GameOver");
+    }
+
     void Update()
     {
         transform.localScale = Vector3.Lerp(transform.localScale, new Vector3(currentScale, currentScale,1), Time.deltaTime * scaleSpeed);

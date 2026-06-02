@@ -8,7 +8,7 @@ public class AudioSettings : MonoBehaviour
 
     void Start()
     {
-        float volume = PlayerPrefs.GetFloat("MusicVolume", 0.5f);
+        float volume = PlayerPrefs.GetFloat("MusicVolume", 0.25f);
 
         musicSource.volume = volume;
         volumeSlider.value = volume;
