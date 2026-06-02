@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using UnityEngine.VFX;
+
 public class SizeManager : MonoBehaviour
 {
     public float scaleSpeed = 5f;
@@ -59,13 +62,13 @@ public class SizeManager : MonoBehaviour
     {
         if (other.CompareTag("Food"))
         {
-            currentScale += 0.1f / currentScale;
+            currentScale += growthPerFood / currentScale;
             GameManager.instance.currentFood--;
             Destroy(other.gameObject);
             return;
         }
 
-        // Add this — bots won't fire OnCollisionEnter2D if collider is a trigger
+        // Bots won't fire OnCollisionEnter2D if collider is a trigger
         SimpleBot bot = other.GetComponent<SimpleBot>();
         if (bot != null)
         {
@@ -95,21 +98,40 @@ public class SizeManager : MonoBehaviour
             if (this.currentScale > otherCharacter.currentScale)
             {
                 currentScale += otherCharacter.currentScale * combatGrowthFactor;
-                Debug.Log($"[USPEH] {gameObject.name} je pojedel {collision.gameObject.name}. Nova ciljna velikost: {currentScale}");
-                Destroy(collision.gameObject);
-            }
 
-                if(collision.gameObject.CompareTag("Player"))
+                if (collision.gameObject.CompareTag("Player"))
                 {
-                    SceneManager.LoadScene("GameOver");
+                    Invoke(nameof(LoadGameOver), 1f);
+                }
+                else
+                {
                 }
 
                 Destroy(collision.gameObject);
             }
+            return;
+        }
+
+        // Bot eating
+        SimpleBot bot = collision.gameObject.GetComponent<SimpleBot>();
+        if (bot != null)
+        {
+            float botSize = collision.transform.localScale.x;
+            if (this.currentScale > botSize)
+            {
+                currentScale += botSize * combatGrowthFactor;
+                Debug.Log($"[BOT EATEN] {gameObject.name} ate {collision.gameObject.name}");
+                Destroy(collision.gameObject);
+            }
         }
     }
-    
-    void Update()
+
+    private void LoadGameOver()
+    {
+        SceneManager.LoadScene("GameOver");
+    }
+
+    private void Update()
     {
         timeSinceSplit += Time.deltaTime;
         splitTimer += Time.deltaTime;
@@ -151,7 +173,9 @@ public class SizeManager : MonoBehaviour
             return;
         }
 
-        currentScale *= splitScaleReduction;
+        float splitSize = currentScale * 0.5f;
+
+        currentScale = splitSize;
 
         Vector2 splitDirection = GetCursorDirection();
         Vector3 spawnPosition = transform.position + (Vector3)(splitDirection * splitSpawnOffset);
@@ -179,6 +203,7 @@ public class SizeManager : MonoBehaviour
         newSizeManager.timeSinceSplit = 0f;
         newSizeManager.splitTimer = 0f;
         newSizeManager.splitCellPrefab = splitCellPrefab;
+        newSizeManager.currentScale = splitSize;
 
         Rigidbody2D newRb = newCell.GetComponent<Rigidbody2D>();
         if (newRb != null)
@@ -239,8 +264,7 @@ public class SizeManager : MonoBehaviour
     {
         if (otherCell == null || otherCell.gameObject == gameObject) return;
 
-        float mergeReturnFactor = 1f - splitScaleReduction;
-        currentScale += otherCell.currentScale * mergeReturnFactor;
+        currentScale += otherCell.currentScale;
         timeSinceSplit = 0f;
 
         Debug.Log($"Cells merged! New scale: {currentScale}");
