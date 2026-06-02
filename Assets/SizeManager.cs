@@ -1,5 +1,5 @@
 using UnityEngine;
-
+using UnityEngine.SceneManagement;
 public class SizeManager : MonoBehaviour
 {
     public float scaleSpeed = 5f;
@@ -30,11 +30,16 @@ public class SizeManager : MonoBehaviour
 
                 Debug.Log($"[USPEH] {gameObject.name} je pojedel {collision.gameObject.name}. Nova ciljna velikost: {currentScale}");
 
+                if(collision.gameObject.CompareTag("Player"))
+                {
+                    SceneManager.LoadScene("GameOver");
+                }
+
                 Destroy(collision.gameObject);
             }
         }
     }
-
+    
     void Update()
     {
         transform.localScale = Vector3.Lerp(transform.localScale, new Vector3(currentScale, currentScale,1), Time.deltaTime * scaleSpeed);
