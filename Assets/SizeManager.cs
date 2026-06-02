@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
 
 public class SizeManager : MonoBehaviour
@@ -60,7 +61,11 @@ public class SizeManager : MonoBehaviour
     {
         if (other.CompareTag("Food"))
         {
-            currentScale += 0.1f / currentScale;
+
+            SFXManager.instance.PlayFoodEat();
+
+            currentScale += 0.1f/currentScale;
+
             GameManager.instance.currentFood--;
             Destroy(other.gameObject);
             return;
@@ -94,6 +99,30 @@ public class SizeManager : MonoBehaviour
 
             // Combat eat
             if (this.currentScale > otherCharacter.currentScale)
+{
+    currentScale += otherCharacter.currentScale * combatGrowthFactor;
+
+    if (collision.gameObject.CompareTag("Player"))
+    {
+        SFXManager.instance.PlayPlayerDeath();
+        Invoke(nameof(LoadGameOver), 1f);
+    }
+    else
+    {
+        SFXManager.instance.PlayBotEat();
+    }
+
+    Destroy(collision.gameObject);
+}
+        }
+    }
+
+    private void LoadGameOver()
+    {
+    SceneManager.LoadScene("GameOver");
+    }
+
+    void Update()
             {
                 currentScale += otherCharacter.currentScale * combatGrowthFactor;
                 Debug.Log($"[USPEH] {gameObject.name} je pojedel {collision.gameObject.name}. Nova ciljna velikost: {currentScale}");

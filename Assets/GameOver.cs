@@ -2,43 +2,32 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class MainMenu : MonoBehaviour
+public class GameOver : MonoBehaviour
 {
-    public GameObject mainMenuPanel;
+    public GameObject gameOverPanel;
     public GameObject settingsPanel;
-
-    public GameObject CustomizePanel;
 
     public void PlayGame()
     {
         SceneManager.LoadScene("SampleScene");
     }
 
+    public void ReturnToMainMenu()
+    {
+        SceneManager.LoadScene("MainMenu");
+    }
 
     public void OpenSettings()
     {
-        mainMenuPanel.SetActive(false);
+        gameOverPanel.SetActive(false);
         settingsPanel.SetActive(true);
     }
 
     public void CloseSettings()
     {
         settingsPanel.SetActive(false);
-        mainMenuPanel.SetActive(true);
+        gameOverPanel.SetActive(true);
     }
-
-    public void openCustomization()
-    {
-        mainMenuPanel.SetActive(false);
-        CustomizePanel.SetActive(true);
-    }
-
-        public void closeCustomization()
-    {
-        mainMenuPanel.SetActive(true);
-        CustomizePanel.SetActive(false);
-    }
-
 
     public void ExitGame()
     {
