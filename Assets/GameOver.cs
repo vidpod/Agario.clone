@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 
 public class GameOver : MonoBehaviour
 {
+    public GameObject gameOverPanel;
     public GameObject settingsPanel;
 
     public void PlayGame()
@@ -18,12 +19,14 @@ public class GameOver : MonoBehaviour
 
     public void OpenSettings()
     {
+        gameOverPanel.SetActive(false);
         settingsPanel.SetActive(true);
     }
 
     public void CloseSettings()
     {
         settingsPanel.SetActive(false);
+        gameOverPanel.SetActive(true);
     }
 
     public void ExitGame()
