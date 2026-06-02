@@ -7,6 +7,8 @@ public class MainMenu : MonoBehaviour
     public GameObject mainMenuPanel;
     public GameObject settingsPanel;
 
+    public GameObject CustomizePanel;
+
     public void PlayGame()
     {
         SceneManager.LoadScene("SampleScene");
@@ -24,6 +26,19 @@ public class MainMenu : MonoBehaviour
         settingsPanel.SetActive(false);
         mainMenuPanel.SetActive(true);
     }
+
+    public void openCustomization()
+    {
+        mainMenuPanel.SetActive(false);
+        CustomizePanel.SetActive(true);
+    }
+
+        public void closeCustomization()
+    {
+        mainMenuPanel.SetActive(true);
+        CustomizePanel.SetActive(false);
+    }
+
 
     public void ExitGame()
     {
