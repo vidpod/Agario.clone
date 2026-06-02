@@ -327,9 +327,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SmootCameraFollow
   target: {fileID: 1537139251}
-  speed: 3
-  scaleSpeed: 3
   cam: {fileID: 330585545}
+  followSpeed: 10
+  zoomSpeed: 6
+  baseOrthoSize: 6
+  zoomFactor: 3.5
+  zoomPower: 0.65
+  minOrthoSize: 6
+  maxOrthoSize: 35
 --- !u!1001 &380843062
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -571,7 +576,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Movement
   cam: {fileID: 330585545}
-  speed: 6
+  speed: 3
   speedMultiplierPerScale: 0.1
 --- !u!50 &1537139253
 Rigidbody2D:
@@ -649,25 +654,29 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SizeManager
   scaleSpeed: 1
-  currentScale: 3
+  currentScale: 8
   growthPerFood: 0.5
   combatGrowthFactor: 0.2
   minSizeToSplit: 1
   splitScaleReduction: 0.8
   splitForce: 15
-  splitLaunchSpeed: 25
   splitTravelMultiplier: 1
   splitCellDamping: 0.6
   splitSpawnOffset: 0.6
   splitReturnDelay: 0.25
   splitReturnAcceleration: 8
   splitReturnMaxSpeed: 15
-  splitCellPrefab: {fileID: 8081559159623646377, guid: e8bacd7228cdd9d408f7bf20364cc3e6, type: 3}
+  splitCellPrefab: {fileID: 1765412707}
   mergeDistance: 2.5
   mergeDelay: 0.5
   ownerTag: Player
   ownerMovement: {fileID: 1537139252}
   isMainCell: 1
+--- !u!1 &1765412707 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8081559159623646377, guid: e8bacd7228cdd9d408f7bf20364cc3e6, type: 3}
+  m_PrefabInstance: {fileID: 5140306333321417167}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2118641419
 GameObject:
   m_ObjectHideFlags: 0

@@ -63,6 +63,20 @@ public class SizeManager : MonoBehaviour
             currentScale += 0.1f / currentScale;
             GameManager.instance.currentFood--;
             Destroy(other.gameObject);
+            return;
+        }
+
+        // Add this — bots won't fire OnCollisionEnter2D if collider is a trigger
+        SimpleBot bot = other.GetComponent<SimpleBot>();
+        if (bot != null)
+        {
+            float botSize = other.transform.localScale.x;
+            if (this.currentScale > botSize)
+            {
+                currentScale += botSize * combatGrowthFactor;
+                Debug.Log($"[BOT EATEN] {gameObject.name} ate {other.gameObject.name}");
+                Destroy(other.gameObject);
+            }
         }
     }
 
